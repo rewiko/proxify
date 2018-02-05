@@ -1,0 +1,14 @@
+// Here you can add other styles
+
+#__nuxt {
+  height: 100%;
+  width: 100%;
+}
+
+.sidebar .nuxt-link-active, .sidebar .nav-link i {
+  color: #fff;
+}
+
+.sidebar .nuxt-link-active {
+  background: #20a8d8;
+}

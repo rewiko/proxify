@@ -1,0 +1,10 @@
+node_modules
+build
+gradle-cache
+.gradle
+*.class
+npm-debug.log
+.classpath
+.project
+.settings
+bin/

@@ -1,0 +1,4 @@
+app:
+  csrf: false
+  test: "it works"
+  log_level: "warn"

@@ -1,0 +1,101 @@
+version: '3.1'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+services:
+  node:
+      build:
+        context: node/
+      volumes:
+          - ./node:/src
+      ports:
+        - "1337:1337"
+  postgresql:
+    restart: always
+    image: postgres:9.6.9
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /srv/docker/postgresql:/var/lib/postgresql
+  gatling:
+      build:
+        context: nft/
+      volumes:
+          - ./nft:/src
+          - ./gradle-cache:/root/.gradle
+      links:
+        - node
+      depends_on:
+        - node
+      environment:
+        - UriTarget=http://node:1337
+  prometheus:
+    build: prometheus
+    ports:
+      - "9098:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prom-dev.yml"
+      - '--storage.tsdb.path=/prometheus'
+  grafana:
+    image: grafana/grafana:4.6.3
+    depends_on:
+      - prometheus
+    links:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+  dashboard:
+    build: dashboard
+    depends_on:
+      - grafana
+    environment:
+      - GRAFANA_URL=http://grafana:3000
+      - GRAFANA_USERNAME=admin
+      - GRAFANA_PASSWORD=admin
+    links:
+      - grafana
+    volumes:
+      - ./dashboard/datasources:/datasources
+      - ./dashboard/dashboards:/dashboards
+  mocks:
+    build: mocks
+    ports:
+      - "9044:8080"
+      - "9162:9092"
+    volumes:
+        - ./mocks:/src
+        - ./gradle-cache:/root/.gradle
+  cassandra:
+    build: cassandra
+    ports:
+      - "9043:9042"
+      - "9161:9160"
+  #redis:
+    #build: redis
+    #ports:
+      #- "9044:9042"
+  #cockroach:
+    #image: cockroachdb/cockroach:v2.0.3
+    #ports:
+      #- "26257:26257"
+      #- "8085:8080"
+    #command:
+      #- "start"
+      #- "--insecure"
+      #- "--host=0.0.0.0"
+  #cockroach-init:
+    #build: cockroach-init
+    #entrypoint: /cockroach/init.sh
+    #command: article
+    #depends_on:
+      #- cockroach
+    #restart: on-failure

@@ -1,0 +1,59 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '2.0.2'
+}
+
+apply plugin: 'scala'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  ext.gatlingVersion = '2.3.0' 
+  compile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
+  compile group: 'io.gatling', name: 'gatling-recorder', version: gatlingVersion
+  compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version:gatlingVersion
+  compile 'net.logstash.logback:logstash-logback-encoder:4.11'
+  compile group: 'org.yaml', name: 'snakeyaml', version: '1.21'
+  compile group: 'com.google.guava', name: 'guava', version: '23.0'
+}
+
+version = '1.0'
+
+ext {
+  UriTarget = System.getenv("UriTarget") ?: "http://localhost:1337"
+}
+
+//def UriTarget = System.getenv("UriTarget") ?: "http://localhost:1337"
+println "UriTarget: " + UriTarget
+
+shadowJar {
+    baseName = "${project.name}"
+    version = ''
+    classifier = 'dependencies'
+}
+
+
+task runGatling(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'runner.TestRunner'
+
+    args '-m'
+    args '-bf', 'build/classes/scala/main'
+    args '-rf', 'build/results'
+    args '-s', 'simulations.AuthSimulation'
+    systemProperty  "UriTarget", UriTarget
+}
+runGatling.dependsOn shadowJar
+runGatling.dependsOn build
+
+task execGatling(type: Exec) {
+  commandLine './scripts/runGatlingTest.sh controlTest'
+}
+
+execGatling.dependsOn shadowJar
+execGatling.dependsOn build
+
+def logbackGatlingConfig() {
+ return sourceSets.test.resources.find { it.name == 'logback-gatling.xml'};
+}

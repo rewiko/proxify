@@ -1,0 +1,11 @@
+{
+  "scenarioName": "Status",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/"
+  },
+  "response": {
+    "body": "Mock Proxy",
+    "status": 200
+  }
+}

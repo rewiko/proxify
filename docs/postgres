@@ -1,0 +1,8 @@
+```
+docker-compose -f docker-compose-node.yml exec postgres bash 
+su postgres
+psql
+\c postgres
+select * FROM "Users" ;
+```
+

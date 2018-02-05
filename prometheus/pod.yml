@@ -1,0 +1,56 @@
+# Give prometheus time to flush its metrics.
+terminationGracePeriodSeconds: 300
+
+containers:
+- image: $image
+  name: prometheus
+  args:
+    - "-config.file=/etc/prometheus/$configFile"
+    - "-alertmanager.url=$alertManagerUrl"
+    - "-web.external-url=$externalUrl"
+    - "-storage.local.retention=$storageLocalRetention"
+    - "-storage.local.target-heap-size=$targetHeapSize"
+    - "-query.max-concurrency=$queries"
+  resources:
+    requests:
+      cpu: "2350m"
+      memory: "5040Mi"
+    limits:
+      memory: "5040Mi"
+  ports:
+  - containerPort: 9090
+    name: http
+    protocol: TCP
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 9090
+    initialDelaySeconds: 1
+    timeoutSeconds: 1
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 9090
+    initialDelaySeconds: 900
+    timeoutSeconds: 1
+  volumeMounts:
+  - name: prometheus-storage
+    mountPath: /prometheus
+  #env:
+  #- name: GODEBUG
+    #value: "gctrace=1"
+  #- name: GOGC
+    #value: "100"
+volumes:
+ - name: prometheus-storage
+   $storage
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: failure-domain.beta.kubernetes.io/zone
+          operator: In
+          values:
+          - eu-west-1a

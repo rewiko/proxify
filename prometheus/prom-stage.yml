@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 30s
+  # How often alert rules are evaluated
+  evaluation_interval: 30s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'prometheus'
+
+rule_files:
+  #- /etc/prometheus/rules/alerts.rule
+
+scrape_configs:
+ - job_name: 'prometheus'
+   static_configs:
+     - targets: ['localhost:9090']

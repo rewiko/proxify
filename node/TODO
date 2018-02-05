@@ -1,0 +1,14 @@
+- [x] generate token login and signup
+- [x] router middleware - need to add test
+- [x] Proxy middleware
+- [x] cache request Proxy - simple hashmap LRU - test performance before and after
+set up cache in memory LRU for the proxy to see perf increase in NFT, clear cache after x times
+- [x] set timeout to node-proxy 2 sec otherwise if the backend app if not available the request takes forever
+- [x] pagination + CRUD for all entities
+- [x] set language/translation api
+- [ ] NFT run + prometheus/grafana metrics and dashboard
+- [ ] set up hystrixjs (when resource is unavailable or taking to much load reply back to client quickly)
+- [ ] integration with frontend
+- [ ] test proxy access through webapp only
+- [ ] test proxy access token (cookie, query path, header)
+

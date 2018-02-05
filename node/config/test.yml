@@ -1,0 +1,40 @@
+app:
+  port: 1337
+  pub_dir: "/public"
+  csrf: false
+  cookie_secret: "Your secret key salt goes here. Replace with random, long string in your project."
+  jwt_secret: ofweoifjIUGuydgefewoij890309jlkdnf34doshfodisjfpdsp
+  log_level: "warn"
+permissions:
+  adminUsername: "admin"
+  adminPassword: "admin"
+  adminEmail: "admin@localhost.com"
+database:
+  #sequelize-mssql:
+    #migrate: "drop"
+    #database: "sequelize"
+    #username: "sa"
+    #password: "#SAPassword!"
+    #options: 
+      #dialect: "mssql"
+      #host: "192.168.1.12"
+      #port: 49251
+      #logging: true
+      #pool:
+        #max: 5
+        #min: 0
+        #idle: 10000
+  sequelize-postgres:
+    migrate: "drop"
+    database: "postgres"
+    username: "postgres"
+    password: "postgres"
+    options: 
+      dialect: "postgres"
+      logging: false
+      host: "postgres"
+      port: 5432
+      pool:
+        max: 5
+        min: 0
+        idle: 10000
