@@ -14,6 +14,7 @@ docker-compose -f docker-compose-vue.yml up --force-recreate
 ```
 
 Web UI available on http://localhost:8086
+
 API available on http://localhost:8087
 
 Start only server components :
