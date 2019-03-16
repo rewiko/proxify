@@ -6,6 +6,7 @@ Uses case could be :
 - exposing private application to specific users, by giving them access through the proxy
 - building a api gateway to load your application on different website through iframe + JWT token
 
+## Development
 
 Start all components :
 ```
